@@ -7,7 +7,7 @@ to transcribe audio files.
 3. transcribes each 10 sec audio file and prints the speech to text result on console. 
 
 
-##Prerequisite
+## Prerequisite
 
 0. Setup Google Cloud [Speech Project][speech-quickstart]
 1. Install ffmpeg on your machine (linux)
