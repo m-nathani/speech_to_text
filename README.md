@@ -1,5 +1,4 @@
-# Google Cloud Speech API Samples
-
+# Google Cloud Speech
 These samples show how to use the [Google Cloud Speech API][speech-api]
 to transcribe audio files.
 
