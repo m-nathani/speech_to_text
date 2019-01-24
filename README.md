@@ -17,7 +17,7 @@ to transcribe audio files.
 
 Install the dependencies for this library via [composer](https://getcomposer.org)
 
-    $ cd /path/to/php-docs-samples/speech
+    $ cd /path/to/speech_to_text
     $ composer install
 
 Configure your project using [Application Default Credentials]
@@ -56,16 +56,6 @@ API using the transcribe command:
 ```sh
 php speech.php transcribe [path to audiofile]
 
-```
-
-
-## Troubleshooting
-
-If you get the following error, set the environment variable `GCLOUD_PROJECT` to your project ID:
-
-```
-[Google\Cloud\Core\Exception\GoogleException]
-No project ID was provided, and we were unable to detect a default project ID.
 ```
 
 [speech-api]: http://cloud.google.com/speech
