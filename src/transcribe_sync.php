@@ -1,30 +1,10 @@
 <?php
-/**
- * Copyright 2016 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * For instructions on how to run the full sample:
- *
- * @see https://github.com/GoogleCloudPlatform/php-docs-samples/tree/master/speech/README.md
- */
 
 namespace Google\Cloud\Samples\Speech;
 
 # [START speech_transcribe_sync]
 use Google\Cloud\Speech\V1\SpeechClient;
+use Google\Cloud\Speech\V1\SpeechContext;
 use Google\Cloud\Speech\V1\RecognitionAudio;
 use Google\Cloud\Speech\V1\RecognitionConfig;
 use Google\Cloud\Speech\V1\RecognitionConfig\AudioEncoding;
@@ -33,19 +13,22 @@ use Google\Cloud\Speech\V1\RecognitionConfig\AudioEncoding;
  * Transcribe an audio file using Google Cloud Speech API
  * Example:
  * ```
- * transcribe_sync('/path/to/audiofile.wav');
+ * transcribe_sync('/path/to/audiofile.wav', '/path/to/brands');
  * ```.
  *
  * @param string $audioFile path to an audio file.
+ * @param string $brandFile path to an brand file.
  *
  * @return string the text transcription
  */
-function transcribe_sync($audioFile)
-{
+function transcribe_sync($audioFile, $brandFile) {
+    $brands = explode("\n", file_get_contents($brandFile));
+
     // change these variables
     $encoding = AudioEncoding::FLAC;
     $sampleRateHertz = 48000;
     $languageCode = 'en-US';
+    $speechContext = new SpeechContext(['phrases'=>$brands]);
 
     // get contents of a file into a string
     $content = file_get_contents($audioFile);
@@ -58,10 +41,12 @@ function transcribe_sync($audioFile)
     $config = (new RecognitionConfig())
         ->setEncoding($encoding)
         ->setSampleRateHertz($sampleRateHertz)
-        ->setLanguageCode($languageCode);
+        ->setLanguageCode($languageCode)
+        ->setSpeechContexts(array($speechContext));
 
     // create the speech client
     $client = new SpeechClient();
+    $transcript = '';
 
     try {
         $response = $client->recognize($config, $audio);
@@ -73,6 +58,7 @@ function transcribe_sync($audioFile)
             printf('Transcript: %s' . PHP_EOL, $transcript);
             printf('Confidence: %s' . PHP_EOL, $confidence);
         }
+        return $transcript;
     } finally {
         $client->close();
     }

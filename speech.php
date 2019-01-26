@@ -1,19 +1,5 @@
 <?php
-/**
- * Copyright 2016 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 namespace Google\Cloud\Samples\Speech;
 
 require __DIR__ . '/vendor/autoload.php';
@@ -27,37 +13,39 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 $inputDefinition = new InputDefinition([
-    new InputArgument('audio-file', InputArgument::REQUIRED, 'The audio file to transcribe'),
-    new InputOption('model', null, InputOption::VALUE_REQUIRED, 'The model to use'),
+    new InputArgument('video-file', InputArgument::REQUIRED, 'The video file to transcribe'),
+    new InputOption('language', null, InputOption::VALUE_REQUIRED, 'The language to transcribe'),
     new InputOption('encoding', null, InputOption::VALUE_REQUIRED,
         'The encoding of the audio file. This is required if the encoding is ' .
-        'unable to be determined. '
-    )
+        'unable to be determined. '),
+    new InputOption('brand-file', null, InputOption::VALUE_REQUIRED,
+        'The brand names for speech context to transcribe')
 ]);
 
 $application = new Application('Cloud Speech');
 $application->add(new Command('transcribe'))
     ->setDefinition($inputDefinition)
-    ->setDescription('Transcribe an audio file using Google Cloud Speech API')
+    ->setDescription('Transcribe an vidoe file using Google Cloud Speech API')
     ->setHelp(<<<EOF
-The <info>%command.name%</info> command transcribes audio from a file using the
+The <info>%command.name%</info> command transcribes video from a file using the
 Google Cloud Speech API.
 
-<info>php %command.full_name% audio_file.wav</info>
+<info>php %command.full_name% video_file.mp4</info>
 
 EOF
     )
     ->setCode(function (InputInterface $input, OutputInterface $output) {
-        $audioFile = $input->getArgument('audio-file');
-	$outAudioFile = basename(substr($audioFile, 0, strrpos($audioFile, ".")));
-	$path = "resources/$outAudioFile";
-	shell_exec("rm -rf resources/$outAudioFile && mkdir resources/$outAudioFile");
-	shell_exec("ffmpeg -i $audioFile -loglevel error -f segment -segment_time 10  -ac 1 $path/$outAudioFile"."_%02d.flac");
-	$files = array_diff(scandir($path), array('.', '..'));
-	foreach($files as $file) {
-	  printf("%s \n", $file);
-	  transcribe_sync("$path/$file");	
-	}
+        $videoFile = $input->getArgument('video-file');
+        $resourcesPath = dirname(__FILE__)."/resources";
+        $brandFile = dirname(__FILE__)."/brands";
+        $transcript = '';
+
+        list($audioPath, $files) = transform_video($videoFile, $resourcesPath);
+        foreach($files as $file) {
+            printf('Audio File: %s' . PHP_EOL, $file);
+            $transcript .= transcribe_sync("$audioPath/$file", $brandFile) . ' ';
+        }
+        printf("Complete transcript:  %s \n", $transcript);
     });
 
 $application->run();
