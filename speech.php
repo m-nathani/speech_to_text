@@ -9,7 +9,7 @@ $application->command('transcribe video-file [-l|--language=] [-e|--encoding=] [
     $resourcesPath = dirname(__FILE__)."/resources";
     $transcript = '';
 
-    list($audioPath, $audioFiles) = transform_video($videoFile, $resourcesPath);
+    list($audioPath, $audioFiles) = transform_video($videoFile, $resourcesPath, $rateHertz);
     foreach($audioFiles as $file) {
         printf('Audio File: %s' . PHP_EOL, $file);
         $transcript .= transcribe_sync("$audioPath/$file", $brandFile, $language, $encoding, $rateHertz) . ' ';
