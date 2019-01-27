@@ -1,7 +1,8 @@
 {
     "require": {
         "google/cloud-speech": "~0.17",
-        "symfony/console": "^3.0"
+        "symfony/console": "^3.0",
+        "mnapoli/silly": "^1.7"
     },
     "require-dev": {
         "google/cloud-tools": "^0.8.5"

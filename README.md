@@ -48,13 +48,45 @@ To run the Speech Samples:
     Available commands:
       help                    Displays help for a command
       list                    Lists commands
-      transcribe              Transcribe an audio file using Google Cloud Speech API
+      transcribe              Transcribe an video file using Google Cloud Speech API
 
-Once you have a speech sample in the proper format, send it through the speech
+
+## Help
+
+      $ php speech.php transcribe --help
+
+    Usage:
+        transcribe [options] [--] <video-file>
+
+    Arguments:
+        video-file                   The video file to transcribe
+
+    Options:
+        -l, --language=LANGUAGE      The language to transcribe [default: "en-US"]
+        -e, --encoding=ENCODING      The encoding of the audio file. This is required if the encoding is unable to be determined. [default: 2]
+        -b, --brand-file=BRAND-FILE  The brand names for speech context to transcribe [default: "brands"]
+        -r, --rate-hertz=RATE-HERTZ  The sample rate (in Hertz) of the supplied video [default: 48000]
+        -h, --help                   Display this help message
+        -q, --quiet                  Do not output any message
+        -V, --version                Display this application version
+            --ansi                   Force ANSI output
+            --no-ansi                Disable ANSI output
+        -n, --no-interaction         Do not ask any interactive question
+        -v|vv|vvv, --verbose         Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+    Help:
+        Transcribe an video file using Google Cloud Speech API
+        The transcribe command transcribes video from a file using the
+        Google Cloud Speech API.
+        
+        php speech.php transcribe video_file.mp4
+
+
+Just send the speech sample, send it through the speech
 API using the transcribe command:
 
 ```sh
-php speech.php transcribe [path to audiofile]
+php speech.php transcribe [path to audio/video file]
 
 ```
 

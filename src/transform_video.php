@@ -1,4 +1,4 @@
-<?php  
+<?php
 
 /**
  * Transforms an video file using FFMPEG API
